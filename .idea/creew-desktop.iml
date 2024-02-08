@@ -5,6 +5,8 @@
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/main/_internal/model_test/assets" />
       <excludeFolder url="file://$MODULE_DIR$/model" />
       <excludeFolder url="file://$MODULE_DIR$/saved_model" />
       <excludeFolder url="file://$MODULE_DIR$/saved_model/crews_model/assets" />
