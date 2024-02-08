@@ -6,12 +6,16 @@ from PIL import ImageColor
 from PIL import ImageDraw
 from PIL import ImageFont
 import numpy as np
+import cv2
 
 
 def display_image(image):
-    fig = plt.figure(figsize=(640, 640))
-    plt.grid(False)
-    plt.imshow(image)
+    while (True):
+        #opencv_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
+        cv2.imshow('Prediction', image)#Mostramos el video en pantalla
+
+        if cv2.waitKey(1) == 27:  # Cuando oprimamos "Escape" rompe el video
+            break
 
 
 def prodect_creews(yolo_model, image_path):
@@ -32,9 +36,10 @@ def prodect_creews(yolo_model, image_path):
     image_batch = inference_resizing([image_to_predict])
 
     y_pred = yolo_model.predict(image_batch)
-    category_names = {6: 'nut', 2: 'wood screw', 1: 'lag wood screw', 7: 'bolt',
-                      5: 'black oxide screw', 4: 'shiny screw', 3: 'short wood screw',
-                      0: 'long lag screw', 8: 'large nut', 10: 'nut', 9: 'nut',
+    category_names = {6: 'tuerca pequeña', 2: 'tornillo para madera', 1: 'lag tornillo para madera', 7: 'perno',
+                      5: 'tornillo de óxido negro', 4: 'tornillo brillante', 3: 'tornillo corto para madera',
+                      0: 'tornillo tirafondo largo', 8: 'tuerca grande', 10: 'tuerca mediana',
+                      9: 'tuerca mediana-pequeña',
                       11: 'machine screw', 12: 'short machine screw'}
 
     result = {key: value for key, value in y_pred.items()}
@@ -51,10 +56,10 @@ def prodect_creews(yolo_model, image_path):
         image_to_predict.numpy(), result["boxes"],
         result["classes"],
         category_names, result["confidence"])
-    url_image = '/' + image_path
-    # img = Image.fromarray(np.frombuffer(image_with_boxes, np.uint8))
-    img = Image.fromarray(np.uint8(image_with_boxes)).convert("RGB")
-    img.save(image_path)
+    image_with_boxes = np.uint8(image_with_boxes)
+    #display_image(image_with_boxes)
+    img = Image.fromarray(image_with_boxes).convert("RGB")
+    #img.save(image_path)
     """ with open(image_path , 'wb+') as destination:
         for chunk in img.chunks():
             destination.write(chunk) """
@@ -66,16 +71,11 @@ def prodect_creews(yolo_model, image_path):
         if value < 0:
             continue
         category_name = category_names[value]
-        if category_name in total_creews:
-            pass
-        else:
+        if category_name not in total_creews:
             total_creews[category_name] = 0
         total_creews[category_name] = total_creews[category_name] + 1
 
-    return {
-        'result': result,
-        'total_creews': total_creews
-    }
+    return total_creews, img
 
 
 def draw_bounding_box_on_image(image,
@@ -149,7 +149,7 @@ def draw_boxes(image, boxes, classes, class_names, scores, max_boxes=1000, min_s
                 y_max,
                 x_max,
                 color,
-                font,
+                font=font,
                 display_str_list=[display_str])
             np.copyto(image, np.array(image_pil))
     return image
