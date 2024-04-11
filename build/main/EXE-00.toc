@@ -62,7 +62,7 @@
  [],
  False,
  False,
- 1707348335,
+ 1707593779,
  [('run',
    '/home/programor-sr/Documentos/Proyects/Python/creew-desktop/.venv/lib/python3.10/site-packages/PyInstaller/bootloader/Linux-64bit-intel/run',
    'EXECUTABLE')],
