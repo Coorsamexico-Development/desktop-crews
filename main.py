@@ -13,7 +13,7 @@ app.title("Detección de Tornillos")
 app.bind('<Escape>', lambda e: app.quit())
 # Dimesiones Anchura x Altura
 app.geometry("800x600")
-app.minsize(600, 500)
+app.minsize(800, 600)
 app.attributes('-alpha', 0.8)
 # tk.Wm.wm_title(app, "Title")
 
@@ -122,15 +122,15 @@ combobox_camara.grid(
 )
 
 
+camaras = []
 def count_cameras():
-    global combobox_camara
-    camaras = []
+    global combobox_camara,camaras
 
     for i in range(10):
         cap = cv2.VideoCapture(i)
         if not cap.read()[0]:
-            break
-        camaras.append(i)
+            continue
+        camaras.append({f"Camará {i}": i})
         cap.release()
     combobox_camara["values"] = [f"Camará {c}" for c in camaras]
 
