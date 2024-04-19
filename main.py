@@ -6,13 +6,13 @@ import tensorflow as tf
 from PIL import Image, ImageTk
 from yolov8 import predict_crews, draw_boxes
 import os
-from filesystems import authenticate_implicit_with_adc
+from scr.features.utils.filesystems import authenticate_implicit_with_adc
 
 app = tk.Tk()
 app.title("Detección de Tornillos")
 app.bind('<Escape>', lambda e: app.quit())
 # Dimesiones Anchura x Altura
-app.geometry("800x600")
+app.geometry("1000x600")
 app.minsize(800, 600)
 app.attributes('-alpha', 0.8)
 # tk.Wm.wm_title(app, "Title")
@@ -99,7 +99,9 @@ label_model.grid(
 def change_camara(_):
     global cap
     cap.release()
-    cap = cv2.VideoCapture(combobox_camara.current())  # Elegimos la camara con la que vamos a hacer la deteccion
+    select_combobox = combobox_camara.current()
+    camara_index = list(camaras[select_combobox].values())[0]
+    cap = cv2.VideoCapture(camara_index)  # Elegimos la camara con la que vamos a hacer la deteccion
 
 
 # widget model
@@ -132,13 +134,13 @@ def count_cameras():
             continue
         camaras.append({f"Camará {i}": i})
         cap.release()
-    combobox_camara["values"] = [f"Camará {c}" for c in camaras]
+    combobox_camara["values"] = [f"{key}"  for c in camaras for key, value in c.items()]
 
     if len(camaras) > 0:
         combobox_camara.current(0)
 
 
-count_cameras()
+#count_cameras()
 cap = cv2.VideoCapture(0)
 width, height = 128, 128
 # cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
@@ -283,7 +285,7 @@ def capture_camera():
     if not ref:
         captured_image = Image.open(
             os.path.join(os.path.dirname(os.path.abspath(__file__)), "images", "image_not_available.png"))
-        captured_image = captured_image.resize((128, 128))
+        captured_image = captured_image.resize((256, 256))
         photo_image = ImageTk.PhotoImage(captured_image)
 
         # Displaying photoimage in the label
@@ -309,11 +311,11 @@ def capture_camera():
     # Configure image in the label
     label_camera.configure(image=photo_image)
 
-    # Repeat the same process after every 10 seconds
+    # Repeat the same process after every 10  mill seconds
     app.after(10, capture_camera)
 
 
-app.after(10, load_models)
+#app.after(10, load_models)
 
 button_predict.config(command=predict_model)
 # palabra.trace("w",lambda p:print("Hola") )
