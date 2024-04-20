@@ -4,34 +4,42 @@ from PIL import Image, ImageTk
 import os
 
 class CaptureCameras:
-    camaras = []
+    camaras = {}
     cap = None
+    camara_index = None
     def __init__(self, size = (256,256)):
         self.size = size
     
     def start(self):
         total_camaras=  self.count_cameras()
         if total_camaras > 0:
-            self.set_camera(self.camaras[0])
+            first_camara = list(self.camaras.keys())[0]
+            self.set_camera(self.camaras[first_camara])
 
     def count_cameras(self):
-        self.camaras = []
+        self.camaras = {}
         for i in range(10):
             capture = cv2.VideoCapture(i)
             if not capture.isOpened():
                 continue
-            self.camaras.append({f"Camará {i}": i})
+            self.camaras[f"Cámara {i+1}"]= i
             capture.release()
-        return len(self.camaras)
+        return len(self.camaras.keys())
 
-    def set_camera(self, camara):
+    def set_camera(self, camara_index):
+        self.camara_index = camara_index
         if self.cap is not None:
             self.cap.release()
-        self.cap = cv2.VideoCapture(list(camara.values())[0])
+        self.cap = cv2.VideoCapture(camara_index)
+    
+    def leave_camera(self): 
+        if self.cap is not None:
+            self.cap.release()
 
     
     def capture_frame(self):
-        with_image = False
+        with_image = False 
+        
         if self.cap is not None:
             with_image, frame = self.cap.read()
 

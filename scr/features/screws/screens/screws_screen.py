@@ -20,13 +20,16 @@ class ScrewsScreen(tk.Tk):
         self.minsize(*screen_style["minsize"])
         self.attributes(*screen_style["attributes"])
 
-        captura_cameras = CaptureCameras(size = (256,256))
+        self.captura_cameras = CaptureCameras(size = (256,256))
         
         #add sections in screen
-        self.section_camara = CamaraFrame(self,captura_cameras)
+        self.section_camara = CamaraFrame(self,self.captura_cameras)
         self.section_camara.pack(fill="both", expand=False)
 
-        self.section_settings = SettingsFrame(self,captura_cameras)
+        self.section_settings = SettingsFrame(self,
+                                              on_predict=self.section_camara.start_video,
+                                              on_change_camara=self.on_change_camara
+                                              )
         self.section_settings.pack(fill="both", expand=True)
 
         self.start_services()
@@ -35,15 +38,31 @@ class ScrewsScreen(tk.Tk):
          
     
     def start_services(self): 
-        self.after(100, self.start_service_video)
+        self.after(100, self.start_camaras_service)
         
 
-    def start_service_video(self):
-        self.section_camara.start_video()
-        self.after(ms=50000, func= self.section_camara.stop_video)
+    def start_camaras_service(self):
+        self.captura_cameras.start()
+        camaras = self.captura_cameras.camaras
+
+        values_camaras = [
+                          [c  for c in camaras.keys()],
+                          [c  for c in camaras.keys()]
+                          ]
+
+        self.section_settings.set_values_combobox(
+            [ ca for list in values_camaras for ca in list]
+        )
+    
+
 
     def window_resize(self,event):
         self.section_camara.resize_image(height=int((self.winfo_height())/2))
+
+    def on_change_camara(self, _, value):
+        camaras = self.captura_cameras.camaras
+        self.captura_cameras.set_camera(camara_index=camaras[value])
+    
 
     
 

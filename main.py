@@ -6,7 +6,6 @@ import tensorflow as tf
 from PIL import Image, ImageTk
 from yolov8 import predict_crews, draw_boxes
 import os
-from scr.features.utils.filesystems import authenticate_implicit_with_adc
 
 app = tk.Tk()
 app.title("Detección de Tornillos")
