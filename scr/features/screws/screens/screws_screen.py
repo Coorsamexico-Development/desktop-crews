@@ -28,6 +28,7 @@ class ScrewsScreen(tk.Tk):
 
         self.section_settings = SettingsFrame(self,
                                               on_predict=self.section_camara.start_video,
+                                              stop_predict=self.section_camara.stop_video,
                                               on_change_camara=self.on_change_camara
                                               )
         self.section_settings.pack(fill="both", expand=True)

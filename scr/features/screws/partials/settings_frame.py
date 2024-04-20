@@ -4,13 +4,17 @@ from tkinter import ttk
 
 class SettingsFrame(tk.Frame):
     
-    camaras = []
+    is_predicting = False
 
-    def __init__(self, screen, on_predict = lambda:None, on_change_camara= lambda i,text:None):
+    def __init__(self, screen, 
+                 on_predict = lambda:None,
+                 stop_predict=  lambda:None,
+                 on_change_camara= lambda i,text:None):
         super().__init__(screen,**Styles.frame_style())
         self.on_change_camara = on_change_camara
+        self.on_predict = on_predict
+        self.stop_predict = stop_predict
         self.text_selected = tk.StringVar(self)
-
         self.text_camara_selected = tk.StringVar(self)
 
 
@@ -52,6 +56,8 @@ class SettingsFrame(tk.Frame):
             row=2,
             column=1,
         )
+        
+        self.button_predict.config(command=self.start_or_stop_predict)
 
         self.combobox_camara = ttk.Combobox(self,
                                values=(),
@@ -68,7 +74,6 @@ class SettingsFrame(tk.Frame):
             column=1,
         )
 
-        self.button_predict.config(command=on_predict)
 
 
     def set_values_combobox(self,values= ()):
@@ -81,6 +86,18 @@ class SettingsFrame(tk.Frame):
         current_index = self.combobox_camara.current()
         self.on_change_camara(current_index, self.text_camara_selected.get())
          # Elegimos la camara con la que vamos a hacer la deteccion
+         
+    def start_or_stop_predict(self):
+        if self.is_predicting:
+            self.is_predicting = False
+            self.button_predict.config(text="COMENZAR PREDICIONES")
+            self.stop_predict()
+        else:
+            self.is_predicting = True
+            self.button_predict.config(text="DETENER PREDICIONES")
+            self.on_predict()
+        
+        
 
 
     

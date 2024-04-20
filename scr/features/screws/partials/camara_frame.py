@@ -30,7 +30,7 @@ class CamaraFrame(tk.Frame):
         if self.playing:
             return
         self.playing = True
-        
+        self.captura_cameras.set_camera(self.captura_cameras.camara_index)
         self.capture_video()
     
     def capture_video(self):
