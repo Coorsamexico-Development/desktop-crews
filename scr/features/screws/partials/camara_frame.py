@@ -1,12 +1,20 @@
 import tkinter as tk
 from scr.config.styles import Styles
 from scr.utils.capture_camaras import CaptureCameras
-PADDING_X = 80
+from scr.utils.predict_rn_yolov8 import PredictRnYolov8
+from PIL import  ImageTk
+
+
+PADDING_X = 280
 PADDING_Y = 20
 
 class CamaraFrame(tk.Frame):
 
     playing = False
+    model = None
+    categories = None
+    yolov8 = PredictRnYolov8()
+    size_camara = (256,256)
 
     def __init__(self, screen, captura_cameras = CaptureCameras()):
         super().__init__(screen,
@@ -24,7 +32,8 @@ class CamaraFrame(tk.Frame):
     def resize_image(self, height = None):
         if height is None:
             height = self.winfo_height()-24
-        self.captura_cameras.size = (self.winfo_width() -PADDING_X,height-PADDING_Y)
+        
+        self.size_camara = (self.winfo_width() -PADDING_X,height-PADDING_Y)
 
     def start_video(self):
         if self.playing:
@@ -37,11 +46,24 @@ class CamaraFrame(tk.Frame):
         with_image = self.update_image_label()
         
         if self.playing and with_image:
-            self.after(ms=5, func= self.capture_video)
+            self.after(ms=20, func= self.capture_video)
             
         
     def update_image_label(self):
-        with_image, photo_image = self.captura_cameras.capture_frame()
+        with_image, frame = self.captura_cameras.capture_frame()
+        photo_image = None
+        if self.categories is None:
+            image = frame
+        else:
+            frame = frame.resize((256,256))
+            predictions, image_predict = self.yolov8.predict_rn(self.model, self.categories, frame)
+            image = self.yolov8.draw_boxes(image=image_predict,predictions=predictions )
+            
+
+        
+        image = image.resize(self.size_camara)
+        photo_image = ImageTk.PhotoImage(image)
+        
         self.label_camera.photo_image = photo_image
         self.label_camera.configure(image=photo_image)
         return with_image
@@ -49,7 +71,7 @@ class CamaraFrame(tk.Frame):
     
     def stop_video(self):
          self.playing = False
-         self.after(10, self.captura_cameras.leave_camera)
+         self.after(30, self.captura_cameras.leave_camera)
 
 
         

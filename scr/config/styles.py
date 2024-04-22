@@ -12,7 +12,8 @@ class Styles:
              return {
                 "geometry": "1000x600",
                 "minsize":(800, 600),
-                "attributes": ('-alpha', 0.8)
+                "attributes": ('-alpha', 0.8),
+                'background': BACKGROUND_COLOR
              }
 
         @staticmethod

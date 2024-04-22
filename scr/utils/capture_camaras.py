@@ -7,8 +7,8 @@ class CaptureCameras:
     camaras = {}
     cap = None
     camara_index = None
-    def __init__(self, size = (256,256)):
-        self.size = size
+    def __init__(self):
+        pass
     
     def start(self):
         total_camaras=  self.count_cameras()
@@ -45,16 +45,13 @@ class CaptureCameras:
 
         if not with_image:
             print(os.getcwd())
-            captured_image = Image.open(os.path.join(os.getcwd(), "assets", "images", "image_not_available.png"))
-            captured_image = captured_image.resize(self.size)
-            photo_image = ImageTk.PhotoImage(captured_image)
+            frame = Image.open(os.path.join(os.getcwd(), "assets", "images", "image_not_available.png"))
+            
         else:
             # Convert image from one color space to other
-            opencv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+            opencv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # Capture the latest frame and transform to image
-            captured_image = Image.fromarray(opencv_image)
-            captured_image = captured_image.resize(self.size)
-            # Convert captured image to photoimage
-            photo_image = ImageTk.PhotoImage(captured_image, size=self.size)
+            frame = Image.fromarray(opencv_image)
+            
 
-        return with_image, photo_image
+        return with_image, frame
