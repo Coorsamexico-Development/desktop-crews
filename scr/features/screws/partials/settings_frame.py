@@ -9,15 +9,17 @@ class SettingsFrame(tk.Frame):
 
     def __init__(self, screen, 
                  on_predict = lambda:None,
-                 stop_predict=  lambda:None,
+                 on_stop_predict=  lambda:None,
                  on_change_camara= lambda i,text:None,
-                 on_change_model= lambda i,text:None
+                 on_change_model= lambda i,text:None,
+                 on_capture = lambda: None
                  ):
         super().__init__(screen,**Styles.frame_style())
         self.on_change_camara = on_change_camara
         self.on_change_model = on_change_model
         self.on_predict = on_predict
-        self.stop_predict = stop_predict
+        self.on_capture = on_capture
+        self.on_stop_predict = on_stop_predict
         self.text_rn_selected = tk.StringVar(self)
         self.text_camara_selected = tk.StringVar(self)
 
@@ -96,7 +98,7 @@ class SettingsFrame(tk.Frame):
             column=0,
         )
         
-        self.button_predict.config(command=self.start_or_stop_predict)
+        self.button_capturar.config(command=self.capture)
 
         
 
@@ -135,10 +137,13 @@ class SettingsFrame(tk.Frame):
         
     def stop_predict(self):
         self.is_predicting = False
-        
         self.button_predict.config(text="COMENZAR PREDICIONES")
-        print("detener prediciones")
-        self.stop_predict()
+        self.on_stop_predict()
+        
+    def capture(self):
+        self.is_predicting = False
+        self.button_predict.config(text="COMENZAR PREDICIONES")
+        self.on_capture()
         
 
 

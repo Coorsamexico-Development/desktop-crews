@@ -23,7 +23,8 @@ class CamaraFrame(tk.Frame):
             fill=tk.BOTH,
             expand=True,
         )
-        self.update_image_label()
+        _, frame = self.captura_cameras.capture_frame()
+        self.update_image_label(frame)
 
     def resize_image(self, height = None):
         if height is None:
@@ -39,15 +40,17 @@ class CamaraFrame(tk.Frame):
         self.capture_video()
     
     def capture_video(self):
-        with_image = self.update_image_label()
+        with_image, frame = self.captura_cameras.capture_frame()
+        self.update_image_label(frame)
         
         if self.playing and with_image:
             self.after(ms=20, func= self.capture_video)
             
-        
-    def update_image_label(self):
-        with_image, frame = self.captura_cameras.capture_frame()
+    
+    
+    def update_image_label(self, frame):
         photo_image = None
+        predictions = []
         if self.categories is None:
             image = frame
         else:
@@ -55,19 +58,19 @@ class CamaraFrame(tk.Frame):
             predictions, image_predict = self.yolov8.predict_rn(self.model, self.categories, frame)
             image = self.yolov8.draw_boxes(image=image_predict,predictions=predictions )
             
-
-        
         image = image.resize(self.size_camara)
         photo_image = ImageTk.PhotoImage(image)
         
         self.label_camera.photo_image = photo_image
         self.label_camera.configure(image=photo_image)
-        return with_image
+        return predictions
     
     
     def stop_video(self):
          self.playing = False
+         with_image, frame = self.captura_cameras.capture_frame()
          self.after(30, self.captura_cameras.leave_camera)
+         return with_image, frame
 
 
         

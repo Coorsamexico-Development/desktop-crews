@@ -36,9 +36,10 @@ class ScrewsScreen(tk.Tk):
         
         self.section_settings = SettingsFrame(self,
                                               on_predict=self.section_camara.start_video,
-                                              stop_predict=self.section_camara.stop_video,
+                                              on_stop_predict=self.section_camara.stop_video,
                                               on_change_camara=self.on_change_camara,
-                                              on_change_model=self.on_change_model
+                                              on_change_model=self.on_change_model,
+                                              on_capture=self.capture_predict
                                               )
         self.section_settings.pack(side="left", fill="both",padx=10, expand=True)
         
@@ -92,7 +93,7 @@ class ScrewsScreen(tk.Tk):
         
     def start_service_model(self, model):
         self.label_loading.config(text="Cargando red neuronal...")
-        #self.after(50, lambda: self.load_model(model) )
+        self.after(50, lambda: self.load_model(model) )
         
         
     def load_model(self,model):
@@ -102,7 +103,11 @@ class ScrewsScreen(tk.Tk):
         self.label_loading.config(text="100% COMPLENTADO")
         self.after(1000, lambda: self.label_loading.config(text="") )
     
-
+    def capture_predict(self):
+        with_image, frame = self.section_camara.stop_video()
+        if with_image:
+            predictions = self.section_camara.update_image_label(frame)
+            self.section_table_results.update_prediction(predictions)
     
 
         

@@ -1,8 +1,9 @@
-from ast import List
+from typing import List
 import tkinter as tk
 from tkinter import ttk
 
 from scr.config.styles import Styles
+from scr.utils.predict_rn_yolov8 import PredictResult
 
 class TableFrame(tk.Frame):
     
@@ -30,10 +31,10 @@ class TableFrame(tk.Frame):
         self.table.insert(parent='', index=index, values=(index+1, cateory, cant))
         
     
-    def update_prediction(self, predictions = []):
+    def update_prediction(self, predictions: List[PredictResult] = []):
         self.clear_table()
         for index, p in enumerate(predictions):
-            self.insert_row(index, p.name, p.cantidad)
+            self.insert_row(index, p.name, p.total)
 
         
     
