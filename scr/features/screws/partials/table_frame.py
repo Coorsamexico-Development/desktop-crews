@@ -1,3 +1,4 @@
+from ast import List
 import tkinter as tk
 from tkinter import ttk
 
@@ -7,10 +8,11 @@ class TableFrame(tk.Frame):
     
     def __init__(self, screen):
         super().__init__(screen,**Styles.frame_style())
-        self.table = ttk.Treeview(self, columns=('num', 'tornillos', 'cant'),
+        self.table = ttk.Treeview(self, 
+                           columns=('num', 'category', 'cant'),
                             show='headings', )
         self.table.heading('num', text="Num.", )
-        self.table.heading('cateory', text="Tornillos", )
+        self.table.heading('category', text="Tornillos", )
         self.table.heading('cant', text="Cantidad")
         
         
@@ -28,8 +30,10 @@ class TableFrame(tk.Frame):
         self.table.insert(parent='', index=index, values=(index+1, cateory, cant))
         
     
-    def update_prediction(self):
-        pass
+    def update_prediction(self, predictions = []):
+        self.clear_table()
+        for index, p in enumerate(predictions):
+            self.insert_row(index, p.name, p.cantidad)
 
         
     

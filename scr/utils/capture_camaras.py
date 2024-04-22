@@ -3,6 +3,9 @@ import cv2
 from PIL import Image, ImageTk
 import os
 
+CAPTURE_WIDTH = 640
+CAPTURE_HEIGTH = 640
+
 class CaptureCameras:
     camaras = {}
     cap = None
@@ -31,6 +34,8 @@ class CaptureCameras:
         if self.cap is not None:
             self.cap.release()
         self.cap = cv2.VideoCapture(camara_index)
+        #self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAPTURE_WIDTH)
+        #self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAPTURE_HEIGTH)
     
     def leave_camera(self): 
         if self.cap is not None:

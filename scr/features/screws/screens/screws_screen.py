@@ -4,6 +4,7 @@ from scr.config.styles import Styles
 from scr.features.screws.partials.camara_frame import CamaraFrame
 from scr.features.screws.partials.settings_frame import SettingsFrame
 
+from scr.features.screws.partials.table_frame import TableFrame
 from scr.utils.capture_camaras import CaptureCameras
 from scr.features.repositories.keras_rnns_respository import KerasRnnsRepository
 
@@ -28,18 +29,25 @@ class ScrewsScreen(tk.Tk):
         
         #add sections in screen
         self.section_camara = CamaraFrame(self,self.captura_cameras)
-        self.section_camara.pack(fill="both", expand=False)
+        self.section_camara.pack(side="top",fill="both", expand=False, padx=120, pady=20)
 
+        self.label_loading = tk.Label(self, text="Cargando...", **Styles.label_normal_style())
+        self.label_loading.pack(fill="both", expand=True)
+        
         self.section_settings = SettingsFrame(self,
                                               on_predict=self.section_camara.start_video,
                                               stop_predict=self.section_camara.stop_video,
                                               on_change_camara=self.on_change_camara,
                                               on_change_model=self.on_change_model
                                               )
-        self.section_settings.pack(fill="both",padx=10, expand=True)
+        self.section_settings.pack(side="left", fill="both",padx=10, expand=True)
         
-        self.label_loading = tk.Label(self, text="Cargando...", **Styles.label_normal_style())
-        self.label_loading.pack(fill="both")
+        self.section_table_results = TableFrame(self)
+        self.section_table_results.pack(side="right",fill="both",padx=10, expand=True)
+        
+        
+        
+        
         
         
 
@@ -84,7 +92,7 @@ class ScrewsScreen(tk.Tk):
         
     def start_service_model(self, model):
         self.label_loading.config(text="Cargando red neuronal...")
-        self.after(50, lambda: self.load_model(model) )
+        #self.after(50, lambda: self.load_model(model) )
         
         
     def load_model(self,model):

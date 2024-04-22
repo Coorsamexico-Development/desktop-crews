@@ -5,8 +5,6 @@ from scr.utils.predict_rn_yolov8 import PredictRnYolov8
 from PIL import  ImageTk
 
 
-PADDING_X = 280
-PADDING_Y = 20
 
 class CamaraFrame(tk.Frame):
 
@@ -24,8 +22,6 @@ class CamaraFrame(tk.Frame):
         self.label_camera.pack(
             fill=tk.BOTH,
             expand=True,
-            padx=PADDING_X,
-            pady=PADDING_Y
         )
         self.update_image_label()
 
@@ -33,7 +29,7 @@ class CamaraFrame(tk.Frame):
         if height is None:
             height = self.winfo_height()-24
         
-        self.size_camara = (self.winfo_width() -PADDING_X,height-PADDING_Y)
+        self.size_camara = (self.winfo_width(),height)
 
     def start_video(self):
         if self.playing:
