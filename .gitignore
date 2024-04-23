@@ -4,3 +4,4 @@
 /dist
 credentials/credentials.json
 /assets/models/*
+*.pyc
