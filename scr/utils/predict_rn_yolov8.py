@@ -5,8 +5,10 @@ from PIL import Image, ImageColor, ImageDraw, ImageFont
 import numpy as np
 import cv2
 
+
 COLORS_BOXES = colors = list(ImageColor.colormap.values())
 FONT_BOX = ImageFont.load_default()
+SIZE_IMAGE = (320,320)
 
 
 class PredictResult:
@@ -22,8 +24,9 @@ class PredictResult:
 class PredictRnYolov8: 
     def __init__(self):
         pass
-    def predict_rn(self, rn_yolov8_model:int,categories:dict[int, str], image:Image)-> tuple[list[PredictResult],np.ndarray] :
-        
+    
+    def convert_image(self,image:Image):
+        image = image.resize(SIZE_IMAGE)
         image_to_predict = tf.convert_to_tensor(image, dtype=tf.uint8)
         #image_to_predict = tf.image.decode_jpeg(image_to_predict)
         #image_to_predict = tf.image.resize_with_pad(
@@ -33,9 +36,13 @@ class PredictRnYolov8:
         #    method=tf.image.ResizeMethod.BILINEAR,
         #    antialias=False
         #)
+        return image_to_predict
+    
+    def predict_rn(self, rn_yolov8_model:int,categories:dict[int, str], image:Image)-> tuple[list[PredictResult],np.ndarray] :
+        image_to_predict = self.convert_image(image)
 
         inference_resizing = keras_cv.layers.Resizing(
-            256,256, pad_to_aspect_ratio=True, bounding_box_format="xywh"
+            *SIZE_IMAGE, pad_to_aspect_ratio=True, bounding_box_format="xywh"
         )
         image_batch = inference_resizing([image_to_predict])
 

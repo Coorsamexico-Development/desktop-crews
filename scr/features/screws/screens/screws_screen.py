@@ -1,5 +1,7 @@
 import tkinter as tk
 
+import numpy
+
 from scr.config.styles import Styles
 from scr.features.screws.partials.camara_frame import CamaraFrame
 from scr.features.screws.partials.settings_frame import SettingsFrame
@@ -13,6 +15,8 @@ class ScrewsScreen(tk.Tk):
     
     neural_networks = KerasRnnsRepository()
     models =[]
+    capture_frame = None
+    capture_predictions = []
     
     def __init__(self):
         super().__init__()
@@ -43,14 +47,8 @@ class ScrewsScreen(tk.Tk):
                                               )
         self.section_settings.pack(side="left", fill="both",padx=10, expand=True)
         
-        self.section_table_results = TableFrame(self)
-        self.section_table_results.pack(side="right",fill="both",padx=10, expand=True)
-        
-        
-        
-        
-        
-        
+        self.section_table_results = TableFrame(self, on_select=self.select_predictions)
+        self.section_table_results.pack(side="right",fill="both",padx=10, expand=True)       
 
         self.after(100, self.start_services)
         self.wait_visibility()
@@ -105,10 +103,29 @@ class ScrewsScreen(tk.Tk):
     
     def capture_predict(self):
         with_image, frame = self.section_camara.stop_video()
+        self.capture_frame = None # para ver si la red fue predeciada
+        predictions = []
         if with_image:
-            predictions = self.section_camara.update_image_label(frame)
-            self.section_table_results.update_prediction(predictions)
-    
+            must_predict = with_image and self.section_camara.categories is not None
+            if must_predict:
+                self.capture_frame = frame
+                predictions, image_predict = self.section_camara.predictions_frame(frame)
+                frame = self.section_camara.draw_predictions(image_predict=image_predict,predictions=predictions )
+                
+            self.capture_predictions = predictions
+            self.section_camara.update_image_label(frame)
+            self.section_table_results.update_prediction(predictions=predictions)
+            
+            
+    def select_predictions(self,_, predictions_selected):
+        if len(predictions_selected) == 0:
+            predictions_selected = self.capture_predictions
+        
+        image_predict = self.section_camara.yolov8.convert_image(self.capture_frame)
+        image_predict = image_predict.numpy()
+        frame = self.section_camara.draw_predictions(image_predict=image_predict,predictions=predictions_selected )
+        self.section_camara.update_image_label(frame)
+        
 
         
 

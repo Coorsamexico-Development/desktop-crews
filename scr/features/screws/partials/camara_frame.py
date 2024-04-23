@@ -1,9 +1,12 @@
+from email.mime import image
+from typing import List
+
 import tkinter as tk
 from scr.config.styles import Styles
 from scr.utils.capture_camaras import CaptureCameras
 from scr.utils.predict_rn_yolov8 import PredictRnYolov8
-from PIL import  ImageTk
-
+from PIL import  ImageTk,Image
+from scr.utils.predict_rn_yolov8 import PredictResult
 
 
 class CamaraFrame(tk.Frame):
@@ -36,34 +39,36 @@ class CamaraFrame(tk.Frame):
         if self.playing:
             return
         self.playing = True
-        self.captura_cameras.set_camera(self.captura_cameras.camara_index)
-        self.capture_video()
+        is_open = self.captura_cameras.set_camera(self.captura_cameras.camara_index)
+        must_predict = self.categories is not None and is_open
+        self.capture_video(must_predict=must_predict)
     
-    def capture_video(self):
+    def capture_video(self, must_predict = False):
         with_image, frame = self.captura_cameras.capture_frame()
+        if must_predict: 
+            predictions,image_numpy =  self.predictions_frame(frame)
+            frame = self.draw_predictions(image_numpy, predictions)
         self.update_image_label(frame)
         
         if self.playing and with_image:
-            self.after(ms=20, func= self.capture_video)
+            self.after(ms=20, func= lambda:self.capture_video(must_predict))
+            
+    def predictions_frame(self, frame:Image):
+        predicitions, image_numpy = self.yolov8.predict_rn(self.model, self.categories, frame)
+        return predicitions, image_numpy
+       
+    def draw_predictions(self, image_predict,predictions:List[PredictResult]):
+        return self.yolov8.draw_boxes(image=image_predict,predictions=predictions )
+       
+            
+
             
     
-    
-    def update_image_label(self, frame):
-        photo_image = None
-        predictions = []
-        if self.categories is None:
-            image = frame
-        else:
-            frame = frame.resize((256,256))
-            predictions, image_predict = self.yolov8.predict_rn(self.model, self.categories, frame)
-            image = self.yolov8.draw_boxes(image=image_predict,predictions=predictions )
-            
-        image = image.resize(self.size_camara)
+    def update_image_label(self, frame):         
+        image = frame.resize(self.size_camara)
         photo_image = ImageTk.PhotoImage(image)
-        
         self.label_camera.photo_image = photo_image
         self.label_camera.configure(image=photo_image)
-        return predictions
     
     
     def stop_video(self):

@@ -10,6 +10,7 @@ class CaptureCameras:
     camaras = {}
     cap = None
     camara_index = None
+    camara_open = False
     def __init__(self):
         pass
     
@@ -34,8 +35,9 @@ class CaptureCameras:
         if self.cap is not None:
             self.cap.release()
         self.cap = cv2.VideoCapture(camara_index)
-        #self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAPTURE_WIDTH)
-        #self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAPTURE_HEIGTH)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAPTURE_WIDTH)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAPTURE_HEIGTH)
+        return self.cap.isOpened()
     
     def leave_camera(self): 
         if self.cap is not None:
@@ -49,14 +51,11 @@ class CaptureCameras:
             with_image, frame = self.cap.read()
 
         if not with_image:
-            print(os.getcwd())
             frame = Image.open(os.path.join(os.getcwd(), "assets", "images", "image_not_available.png"))
-            
         else:
             # Convert image from one color space to other
             opencv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # Capture the latest frame and transform to image
             frame = Image.fromarray(opencv_image)
-            
-
+            #frame = Image.open(os.path.join(os.getcwd(), "assets", "images", "image_test.jpeg"))
         return with_image, frame
