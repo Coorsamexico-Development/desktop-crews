@@ -1,5 +1,5 @@
 from scr.features.screws.screens.screws_screen import ScrewsScreen
 
-
-app = ScrewsScreen()
-app.mainloop()
+if __name__ == "__main__":
+    app = ScrewsScreen()
+    app.mainloop()
