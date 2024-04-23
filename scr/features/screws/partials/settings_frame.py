@@ -1,5 +1,4 @@
 import tkinter as tk
-from dist.main._internal.PIL.ImageOps import expand
 from scr.config.styles import Styles
 from tkinter import ttk
 
