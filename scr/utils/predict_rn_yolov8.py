@@ -8,7 +8,7 @@ import cv2
 
 COLORS_BOXES = colors = list(ImageColor.colormap.values())
 FONT_BOX = ImageFont.load_default()
-SIZE_IMAGE = (320,320)
+SIZE_IMAGE = (640,640)
 
 
 class PredictResult:
