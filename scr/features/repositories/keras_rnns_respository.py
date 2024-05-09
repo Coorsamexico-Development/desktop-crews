@@ -28,11 +28,21 @@ class KerasRnnsRepository:
     
     def get_models(self):
         path = os.path.join(os.getcwd(), "assets", "models")
+        models = []
+        #models = [{"name": f"Red Neuronal {directory.name}",
+        #           "path": os.path.join(path, directory.name),
+        #           "categories": self.__set_categories(directory.name)
+        #        } for directory in Path(path).iterdir() if directory.is_dir()]
+        archivos = os.listdir(path)
 
-        models = [{"name": f"Red Neuronal {directory.name}",
-                   "path": os.path.join(path, directory.name),
-                   "categories": self.__set_categories(directory.name)
-                } for directory in Path(path).iterdir() if directory.is_dir()]
+        for archivo in archivos:
+            models.append(
+                {"name": f"Red {archivo}",
+                   "path": os.path.join(path, archivo),
+                   "categories": self.__set_categories(archivo)
+                } 
+            )
+
         return models
     
     def load_model(self,model):
@@ -51,6 +61,9 @@ class KerasRnnsRepository:
         if self.categories is None:
             return CATEGORY_NAMES
         else:
-            return self.categories[rn]
+            if rn in self.categories:
+                return self.categories[rn]
+            else:
+                return CATEGORY_NAMES
 
         

@@ -12,8 +12,12 @@ from scr.features.repositories.keras_rnns_respository import KerasRnnsRepository
 
 
 class ScrewsScreen(tk.Tk):
+
+    categories = {
+        'model_prueba.keras': {0:'NAVAJA', 1: 'RONDANA', 2: 'TORNILLO_CHICO', 3:'TORNILLO_LARGO'}
+    }
     
-    neural_networks = KerasRnnsRepository()
+    neural_networks = KerasRnnsRepository(categories)
     models =[]
     capture_frame = None
     capture_predictions = []
