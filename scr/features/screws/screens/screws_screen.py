@@ -1,12 +1,16 @@
+import json
 import tkinter as tk
 
 import numpy
 
+from scr.config.enviroment import Enviroments
 from scr.config.styles import Styles
+from scr.features.model.mappers.producto_mapper import ProductoMapper
 from scr.features.screws.partials.camara_frame import CamaraFrame
 from scr.features.screws.partials.settings_frame import SettingsFrame
 
 from scr.features.screws.partials.table_frame import TableFrame
+from scr.services.pusher_service import PusherService
 from scr.utils.capture_camaras import CaptureCameras
 from scr.features.repositories.keras_rnns_respository import KerasRnnsRepository
 
@@ -18,8 +22,10 @@ class ScrewsScreen(tk.Tk):
     }
     
     neural_networks = KerasRnnsRepository(categories)
+    producto = None
     models =[]
     capture_frame = None
+    pusher_service = None
     capture_predictions = []
     
     def __init__(self):
@@ -32,6 +38,7 @@ class ScrewsScreen(tk.Tk):
         self.minsize(*screen_style["minsize"])
         self.attributes(*screen_style["attributes"])
         self.configure(background=screen_style["background"])
+
 
         self.captura_cameras = CaptureCameras()
         
@@ -60,6 +67,8 @@ class ScrewsScreen(tk.Tk):
          
     
     def start_services(self): 
+        
+        self.pusher_service = PusherService(onConnect=self.onConnect)
         self.start_camaras_service()
         self.after(100, self.start_rn_service)
         
@@ -119,6 +128,8 @@ class ScrewsScreen(tk.Tk):
             self.capture_predictions = predictions
             self.section_camara.update_image_label(frame)
             self.section_table_results.update_prediction(predictions=predictions)
+            if len(predictions) > 0:
+                self.pusher_send_scan(cantidad=predictions[0].total)
             
             
     def select_predictions(self,_, predictions_selected):
@@ -129,6 +140,28 @@ class ScrewsScreen(tk.Tk):
         image_predict = image_predict.numpy()
         frame = self.section_camara.draw_predictions(image_predict=image_predict,predictions=predictions_selected )
         self.section_camara.update_image_label(frame)
+
+    
+
+    def onConnect(self,pusher:PusherService):
+        channel = pusher.channel(f"mesas.{Enviroments.pusherMesa}")
+        channel.bind("updateEntrada", self.pusher_update_red)
+    
+
+    
+
+    def pusher_update_red(self,data):
+        data_json = json.loads(data)
+        self.producto = ProductoMapper.from_json(data_json['producto'])
+        self.section_settings.set_model_combobox(value=self.producto.red_neuronal.name)
+
+    def pusher_send_scan(self,cantidad):
+        self.pusher_service.trigger(channelName=f"mesas.{Enviroments.pusherMesa}.productos.{self.producto.id}",
+                                event="updateCantidadScan",
+                                data={
+                                'cantidad': cantidad,
+                                })
+        
         
 
         

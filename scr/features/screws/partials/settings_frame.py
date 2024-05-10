@@ -1,4 +1,5 @@
 import tkinter as tk
+from typing import Union
 from scr.config.styles import Styles
 from tkinter import ttk
 
@@ -124,6 +125,18 @@ class SettingsFrame(tk.Frame):
          self.combobox_rn_models["values"] = values
          if len(self.combobox_rn_models["values"]) > 0:
             self.combobox_rn_models.current(0)
+
+    def set_model_combobox(self,value:Union[str,None]=None, index:Union[int,None]=None):
+        if value != None:
+            valor = value.lower()
+            for i,model_text in enumerate(self.combobox_rn_models["values"]):
+                if model_text.lower() == valor:
+                    index = i
+        if index != None:
+         self.combobox_rn_models.current(index)
+
+
+   
             
     def change_model(self,_):
         current_index = self.combobox_rn_models.current()
