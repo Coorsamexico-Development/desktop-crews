@@ -4,3 +4,4 @@
 credentials/credentials.json
 /assets/models/*
 *.pyc
+.env
