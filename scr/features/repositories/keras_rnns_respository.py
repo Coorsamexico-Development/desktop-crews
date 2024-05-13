@@ -1,6 +1,7 @@
 import os
-from pathlib import Path
 import tensorflow as tf
+import keras_cv
+
 
 CATEGORY_NAMES = {
                     0: 'tornillo tirafondo largo',
@@ -23,6 +24,9 @@ class KerasRnnsRepository:
 
     def __init__(self,categories = None):
         self.categories = categories
+        self.backbone = keras_cv.models.YOLOV8Backbone.from_preset(
+                "yolo_v8_m_backbone"  # We will use yolov8 small backbone with coco weights
+            )
     
 
     
@@ -51,8 +55,20 @@ class KerasRnnsRepository:
         model_loaded = None
         if model_name in self.history_model:
             model_loaded= self.history_model[model_name]
-        else:  
-            model_loaded = tf.keras.models.load_model(model_path, compile=False, safe_mode=False)
+        else:
+            model_loaded = tf.keras.models.load_model(model_path,
+                                          compile=False, 
+                                          safe_mode=False,
+                                          custom_objects= {
+                                              'YOLOV8Detector': keras_cv.models.YOLOV8Detector(
+                                                   num_classes=len(model['categories']),
+                                                    bounding_box_format="xywh",
+                                                    backbone=self.backbone,
+                                                    fpn_depth=1,
+                                              ),
+                                          }
+                                          
+                                          )
             self.history_model[model_name] = model_loaded
         
         return model_loaded, model['categories']
