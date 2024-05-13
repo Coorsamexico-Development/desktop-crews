@@ -1,3 +1,4 @@
+from tkinter import S
 from typing import List
 import tensorflow as tf
 import keras_cv
@@ -28,7 +29,10 @@ class PredictRnYolov8:
     def convert_image(self,image:Image):
         image = image.resize(SIZE_IMAGE)
         image_to_predict = tf.convert_to_tensor(image, dtype=tf.uint8)
-        #image_to_predict = tf.image.decode_jpeg(image_to_predict)
+        image_to_predict = tf.cast(image_to_predict, tf.float32)
+        #image_to_predict = tf.io.read_file("./assets/images/20240513_100402.jpg")
+        #image_to_predict = tf.image.decode_jpeg(image_to_predict, channels=3)
+        
         #image_to_predict = tf.image.resize_with_pad(
         #    image_to_predict,
         #    256,
@@ -47,6 +51,7 @@ class PredictRnYolov8:
         image_batch = inference_resizing([image_to_predict])
 
         y_pred = rn_yolov8_model.predict(image_batch)
+        
         result = {key: value for key, value in y_pred.items()}
 
         classes = result['classes'][0]
@@ -83,6 +88,8 @@ class PredictRnYolov8:
                 format_results[index_find].scores.append(
                     scores[index]
                 )
+        #image_numpy=image_to_predict.numpy()
+        #image_numpy = tf.cast(image_numpy, tf.uint8)
         return format_results, image_to_predict.numpy()
 
 
@@ -96,11 +103,11 @@ class PredictRnYolov8:
             boxes = predictions[i].boxes
             scores = predictions[i].scores
             total_boxes = len(boxes)
-            # con el fin de no dibujar mas de 100 cajas
+            # con el fin de no dibujar mas de 1000 cajas
             for index_box in range(min(total_boxes, max_boxes)):
                 score = scores[index_box]
                 if score >= min_score:
-                    x_min, y_min, x_max, y_max = tuple(boxes[index_box])
+                    x_min, y_min, width, heigth = tuple(boxes[index_box])
                     display_str = "{}: {}%".format(category_name,
                                                 int(100 * score))
                     color = COLORS_BOXES[1]
@@ -108,11 +115,11 @@ class PredictRnYolov8:
                     
                     self.__draw_bounding_box_on_image(
                         image_pil,
-                        y_min,
+                        y_min * 1.33,
                         x_min,
-                        y_max,
-                        x_max,
-                        color,
+                        y_max=y_min+(heigth*1.333),
+                        x_max=x_min+width,
+                        color=color,
                         display_str_list=[display_str])
                     
                     
