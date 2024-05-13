@@ -1,4 +1,4 @@
-from model.red_neuronal_model import RedNeuronal
+from scr.features.model.red_neuronal_model import RedNeuronal
 
 class RedNeuronalMapper: 
     @staticmethod
