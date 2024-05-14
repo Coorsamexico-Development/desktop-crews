@@ -16,6 +16,8 @@ class CamaraFrame(tk.Frame):
     categories = None
     yolov8 = PredictRnYolov8()
     size_camara = (256,256)
+    predictions = []
+    num_frame = 0
 
     def __init__(self, screen, captura_cameras = CaptureCameras()):
         super().__init__(screen,
@@ -46,15 +48,24 @@ class CamaraFrame(tk.Frame):
     def capture_video(self, must_predict = False):
         with_image, frame = self.captura_cameras.capture_frame()
         if must_predict: 
-            predictions,image_numpy =  self.predictions_frame(frame)
+            predictions, image_numpy =  self.predictions_frame(frame)
             frame = self.draw_predictions(image_numpy, predictions)
         self.update_image_label(frame)
         
         if self.playing and with_image:
             self.after(ms=20, func= lambda:self.capture_video(must_predict))
             
-    def predictions_frame(self, frame:Image):
-        predicitions, image_numpy = self.yolov8.predict_rn(self.model, self.categories, frame)
+    def predictions_frame(self, frame:Image, optimize:bool = True):
+        
+        self.num_frame+1
+        if optimize and self.num_frame % 3 == 0:
+            image_numpy = self.yolov8.image_resize(frame).numpy()
+            predicitions = self.predictions
+        else:
+            self.num_frame=0
+            predicitions, image_numpy = self.yolov8.predict_rn(self.model, self.categories, frame)
+            self.predictions = predicitions
+        
         return predicitions, image_numpy
        
     def draw_predictions(self, image_predict,predictions:List[PredictResult]):

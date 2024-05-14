@@ -25,9 +25,12 @@ class PredictResult:
 class PredictRnYolov8: 
     def __init__(self):
         pass
+
+    def image_resize(self,image:Image):
+        return image.resize(SIZE_IMAGE)
     
     def convert_image(self,image:Image):
-        image = image.resize(SIZE_IMAGE)
+        image = self.image_resize(image=image)
         image_to_predict = tf.convert_to_tensor(image, dtype=tf.uint8)
         image_to_predict = tf.cast(image_to_predict, tf.float32)
         #image_to_predict = tf.io.read_file("./assets/images/20240513_100402.jpg")
@@ -115,9 +118,9 @@ class PredictRnYolov8:
                     
                     self.__draw_bounding_box_on_image(
                         image_pil,
-                        y_min * 1.33,
+                        y_min,
                         x_min,
-                        y_max=y_min+(heigth*1.333),
+                        y_max=y_min+heigth,
                         x_max=x_min+width,
                         color=color,
                         display_str_list=[display_str])
