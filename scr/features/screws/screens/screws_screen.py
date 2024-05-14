@@ -122,7 +122,8 @@ class ScrewsScreen(tk.Tk):
             must_predict = with_image and self.section_camara.categories is not None
             if must_predict:
                 self.capture_frame = frame
-                predictions, image_predict = self.section_camara.predictions_frame(frame)
+                
+                predictions, image_predict = self.section_camara.predictions_frame(frame, optimize=False)
                 frame = self.section_camara.draw_predictions(image_predict=image_predict,predictions=predictions )
                 
             self.capture_predictions = predictions
