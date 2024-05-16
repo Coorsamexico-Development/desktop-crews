@@ -58,8 +58,9 @@ class CamaraFrame(tk.Frame):
     def predictions_frame(self, frame:Image, optimize:bool = True):
         
         self.num_frame+1
-        if optimize and self.num_frame % 3 == 0:
-            image_numpy = self.yolov8.image_resize(frame).numpy()
+        if optimize and self.num_frame % 10 != 0:
+            image_numpy = self.yolov8.convert_image(frame)
+            image_numpy = image_numpy.numpy()
             predicitions = self.predictions
         else:
             self.num_frame=0

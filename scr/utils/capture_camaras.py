@@ -57,5 +57,5 @@ class CaptureCameras:
             opencv_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # Capture the latest frame and transform to image
             frame = Image.fromarray(opencv_image)
-            #frame = Image.open(os.path.join(os.getcwd(), "assets", "images", "20240513_100402.jpg"))
+            #frame = Image.open(os.path.join(os.getcwd(), "assets", "images", "test_camara.jpg"))
         return with_image, frame
