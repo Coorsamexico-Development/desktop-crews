@@ -30,7 +30,7 @@ class PredictRnYolov8:
         return image.resize(SIZE_IMAGE)
     
     def convert_image(self,image:Image):
-        image = self.image_resize(image=image)
+        image = image.resize(SIZE_IMAGE)
         image_to_predict = tf.convert_to_tensor(image, dtype=tf.uint8)
         image_to_predict = tf.cast(image_to_predict, tf.float32)
         #image_to_predict = tf.io.read_file("./assets/images/20240513_100402.jpg")
@@ -99,7 +99,7 @@ class PredictRnYolov8:
     def draw_boxes(self,image:np.ndarray, 
                     predictions:List[PredictResult] =[],
                     max_boxes:int=1000, 
-                    min_score:float=0.1):
+                    min_score:float=0.01):
         print("--------------Intento de dibujar los boxes ----------------")
         for i in range(len(predictions)):
             category_name = predictions[i].name

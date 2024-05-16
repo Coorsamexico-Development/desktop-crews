@@ -18,7 +18,10 @@ from scr.features.repositories.keras_rnns_respository import KerasRnnsRepository
 class ScrewsScreen(tk.Tk):
 
     categories = {
-        'model_prueba.keras': {0:'NAVAJA', 1: 'RONDANA', 2: 'TORNILLO_CHICO', 3:'TORNILLO_LARGO'}
+        'model_prueba.keras': {0:'NAVAJA', 1: 'RONDANA', 2: 'TORNILLO_CHICO', 3:'TORNILLO_LARGO'},
+        'model_prueba_coco.h5': {0:'NAVAJA', 1: 'RONDANA', 2: 'TORNILLO_CHICO', 3:'TORNILLO_LARGO'},
+        'model_prueba_m.h5': {0:'NAVAJA', 1: 'RONDANA', 2: 'TORNILLO_CHICO', 3:'TORNILLO_LARGO'},
+        'model_prueba_s_2.h5': {0:'NAVAJA', 1: 'RONDANA', 2: 'TORNILLO_CHICO', 3:'TORNILLO_LARGO'},
     }
     
     neural_networks = KerasRnnsRepository(categories)
