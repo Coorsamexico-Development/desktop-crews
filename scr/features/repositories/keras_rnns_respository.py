@@ -25,7 +25,7 @@ class KerasRnnsRepository:
     def __init__(self,categories = None):
         self.categories = categories
         self.backbone = keras_cv.models.YOLOV8Backbone.from_preset(
-                "yolo_v8_m_backbone_coco"  # We will use yolov8 small backbone with coco weights
+                "yolo_v8_m_backbone"  # We will use yolov8 small backbone with coco weights
             )
     
 
@@ -64,7 +64,7 @@ class KerasRnnsRepository:
                                                    num_classes=len(model['categories']),
                                                     bounding_box_format="xywh",
                                                     backbone=self.backbone,
-                                                    fpn_depth=1,
+                                                    fpn_depth=3,
                                               ),
                                           }
                                           
