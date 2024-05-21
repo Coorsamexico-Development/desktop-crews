@@ -45,7 +45,8 @@ class PredictRnYolov8:
         #)
         return image_to_predict
     
-    def predict_rn(self, rn_yolov8_model:int,categories:dict[int, str], image:Image)-> tuple[list[PredictResult],np.ndarray] :
+    def predict_rn(self, rn_yolov8_model:int,categories:dict[int, str], image:Image, 
+                    min_score:float=0.01)-> tuple[list[PredictResult],np.ndarray] :
         image_to_predict = self.convert_image(image)
 
         inference_resizing = keras_cv.layers.Resizing(
@@ -68,6 +69,9 @@ class PredictRnYolov8:
             no_class = classes[index]
             if no_class < 0:
                 continue
+            score = scores[index]
+            if score < min_score: 
+                continue
 
             index_find = next((i for i, d in enumerate(format_results)
                             if d.id == no_class
@@ -81,7 +85,7 @@ class PredictRnYolov8:
                     name=category_name,
                     total=1,
                     boxes=[boxes[index]],
-                    scores=[scores[index]]
+                    scores=[score]
                 ))
             else:
                 format_results[index_find].total += 1
@@ -89,7 +93,7 @@ class PredictRnYolov8:
                     boxes[index]
                 )
                 format_results[index_find].scores.append(
-                    scores[index]
+                    score
                 )
         #image_numpy=image_to_predict.numpy()
         #image_numpy = tf.cast(image_numpy, tf.uint8)
