@@ -72,6 +72,7 @@ class PredictRnYolov8:
             score = scores[index]
             if score < min_score: 
                 continue
+            
 
             index_find = next((i for i, d in enumerate(format_results)
                             if d.id == no_class
