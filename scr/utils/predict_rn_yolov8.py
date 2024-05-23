@@ -78,8 +78,6 @@ class PredictRnYolov8:
                             ), None)
             if index_find is None:
                 category_name = categories[no_class]
-                
-              
                 format_results.append(PredictResult(
                     id=no_class,
                     name=category_name,
