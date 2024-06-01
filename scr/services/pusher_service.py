@@ -20,7 +20,6 @@ class PusherService:
       root.setLevel(logging.INFO)
       ch = logging.StreamHandler(sys.stdout)
       root.addHandler(ch)
-
       self._pusher_server = pysher.Pusher( key=Enviroments.pusherAppkey, 
                                           cluster=Enviroments.pusherCluster, 
                                           secret=Enviroments.pusherCluster)

@@ -87,6 +87,9 @@ class ScrewsScreen(tk.Tk):
         )
         if len(self.models) > 0:
             self.start_service_model(self.models[0])
+        else:
+            self.label_loading.config(text="")
+
 
 
     def window_resize(self,event):
@@ -112,7 +115,7 @@ class ScrewsScreen(tk.Tk):
         self.section_camara.model = model
         self.section_camara.categories= categories
         self.label_loading.config(text="100% COMPLENTADO")
-        self.after(1000, lambda: self.label_loading.config(text="") )
+        self.after(300, lambda: self.label_loading.config(text="") )
     
     def capture_predict(self):
         with_image, frame = self.section_camara.stop_video()
