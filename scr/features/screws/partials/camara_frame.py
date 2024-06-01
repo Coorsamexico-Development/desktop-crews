@@ -1,12 +1,12 @@
 from email.mime import image
 from typing import List
+import numpy as np
 
 import tkinter as tk
 from scr.config.styles import Styles
 from scr.utils.capture_camaras import CaptureCameras
-from scr.utils.predict_rn_yolov8 import PredictRnYolov8
+from scr.utils.detectron2_rn import PredicDetectron2, PredictResult
 from PIL import  ImageTk,Image
-from scr.utils.predict_rn_yolov8 import PredictResult
 
 
 class CamaraFrame(tk.Frame):
@@ -14,7 +14,7 @@ class CamaraFrame(tk.Frame):
     playing = False
     model = None
     categories = None
-    yolov8 = PredictRnYolov8()
+    predictDetectron = PredicDetectron2()
     size_camara = (256,256)
     predictions = []
     num_frame = 0
@@ -59,18 +59,17 @@ class CamaraFrame(tk.Frame):
         
         self.num_frame+1
         if optimize and self.num_frame % 10 != 0:
-            image_numpy = self.yolov8.convert_image(frame)
-            image_numpy = image_numpy.numpy()
+            image_numpy = np.array(frame)
             predicitions = self.predictions
         else:
             self.num_frame=0
-            predicitions, image_numpy = self.yolov8.predict_rn(self.model, self.categories, frame)
+            predicitions, image_numpy = self.predictDetectron.predict_rn(self.model, self.categories, frame)
             self.predictions = predicitions
         
         return predicitions, image_numpy
        
     def draw_predictions(self, image_predict,predictions:List[PredictResult]):
-        return self.yolov8.draw_boxes(image=image_predict,predictions=predictions )
+        return self.predictDetectron.draw_boxes(image=image_predict,predictions=predictions )
        
             
 
