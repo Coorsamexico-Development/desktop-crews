@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from scr.config.styles import Styles
-from scr.utils.predict_rn_yolov8 import PredictResult
+from scr.utils.detectron2_rn import PredictResult
 
 class TableFrame(tk.Frame):
     
