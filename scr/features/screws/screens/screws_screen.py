@@ -12,19 +12,16 @@ from scr.features.screws.partials.settings_frame import SettingsFrame
 from scr.features.screws.partials.table_frame import TableFrame
 from scr.services.pusher_service import PusherService
 from scr.utils.capture_camaras import CaptureCameras
-from scr.features.repositories.keras_rnns_respository import KerasRnnsRepository
+from scr.features.repositories.dectectron2_repository import Dectectron2Repository
 
 
 class ScrewsScreen(tk.Tk):
 
     categories = {
         'model_prueba.keras': {0:'NAVAJA', 1: 'RONDANA', 2: 'TORNILLO_CHICO', 3:'TORNILLO_LARGO'},
-        'model_prueba_coco.h5': {0:'NAVAJA', 1: 'RONDANA', 2: 'TORNILLO_CHICO', 3:'TORNILLO_LARGO'},
-        'model_prueba_m.h5': {0:'NAVAJA', 1: 'RONDANA', 2: 'TORNILLO_CHICO', 3:'TORNILLO_LARGO'},
-        'model_prueba_s_2.h5': {0:'NAVAJA', 1: 'RONDANA', 2: 'TORNILLO_CHICO', 3:'TORNILLO_LARGO'},
     }
     
-    neural_networks = KerasRnnsRepository(categories)
+    neural_networks = Dectectron2Repository(categories)
     producto = None
     models =[]
     capture_frame = None
