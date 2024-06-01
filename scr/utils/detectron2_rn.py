@@ -1,8 +1,7 @@
 from typing import List
 
 from detectron2.engine import DefaultPredictor
-import tensorflow as tf
-import keras_cv
+
 from PIL import Image, ImageColor, ImageDraw, ImageFont
 import numpy as np
 import cv2
