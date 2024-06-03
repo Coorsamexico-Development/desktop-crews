@@ -12,6 +12,7 @@ cuda-python==12.5.0
 cycler==0.12.1
 debugpy==1.8.1
 decorator==5.1.1
+-e git+https://github.com/facebookresearch/detectron2@79f914785a87b80565381f4489b129e633c4efb5#egg=detectron2
 exceptiongroup==1.2.1
 executing==2.0.1
 filelock==3.14.0
@@ -25,6 +26,8 @@ ipykernel==6.29.4
 ipython==8.24.0
 jedi==0.19.1
 Jinja2==3.1.4
+jupyter_client==8.6.2
+jupyter_core==5.7.2
 kiwisolver==1.4.5
 Markdown==3.6
 MarkupSafe==2.1.5
@@ -70,6 +73,9 @@ pyzmq==26.0.3
 six==1.16.0
 stack-data==0.6.3
 sympy==1.12
+tabulate==0.9.0
+tensorboard==2.16.2
+tensorboard-data-server==0.7.2
 termcolor==2.4.0
 tomli==2.0.1
 torch==2.3.0
@@ -82,5 +88,4 @@ typing_extensions==4.12.0
 wcwidth==0.2.13
 Werkzeug==3.0.3
 yacs==0.1.8
--e git+https://github.com/facebookresearch/detectron2@79f914785a87b80565381f4489b129e633c4efb5#egg=detectron2
-
+youtube-dl==2021.12.17
