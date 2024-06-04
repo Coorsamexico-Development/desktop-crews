@@ -3,8 +3,14 @@
 /dist
 credentials/credentials.json
 /assets/models/*
+<<<<<<< HEAD
 /assets/images/*
 *.pyc
 .env
 .venv*
 
+=======
+*.pyc
+.env
+.venv*
+>>>>>>> 95a1c7fe7251e2889ec33fe3628d027cb30ca7a4
