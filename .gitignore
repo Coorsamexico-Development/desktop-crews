@@ -3,8 +3,11 @@
 /dist
 credentials/credentials.json
 /assets/models/*
-*.pyc
-.env
-.venv*
 
 /assets/models-dectectron2/*
+
+.env
+.venv*
+**/*.pyc
+__pycache__
+**/__pycache__/
