@@ -82,51 +82,29 @@ typing_extensions==4.12.0
 wcwidth==0.2.13
 Werkzeug==3.0.3
 yacs==0.1.8
-<<<<<<< HEAD
-=======
--e git+https://github.com/facebookresearch/detectron2@79f914785a87b80565381f4489b129e633c4efb5#egg=detectron2
->>>>>>> 95a1c7fe7251e2889ec33fe3628d027cb30ca7a4
 
 certifi==2023.11.17
 cffi==1.16.0
 charset-normalizer==3.3.2
 click==8.1.7
-<<<<<<< HEAD
-=======
-matplotlib==3.8.2
->>>>>>> 95a1c7fe7251e2889ec33fe3628d027cb30ca7a4
 mdurl==0.1.2
 ml-dtypes==0.3.2
 namex==0.0.7
 ndg-httpsclient==0.5.1
-<<<<<<< HEAD
-=======
-numpy==1.26.3
->>>>>>> 95a1c7fe7251e2889ec33fe3628d027cb30ca7a4
 oauthlib==3.2.2
 opencv-python==4.9.0.80
 opt-einsum==3.3.0
 optree==0.11.0
-<<<<<<< HEAD
-=======
-packaging==23.2
-Pillow==9.5.0
->>>>>>> 95a1c7fe7251e2889ec33fe3628d027cb30ca7a4
 promise==2.3
 psutil==5.9.8
 pusher==3.3.2
 pyasn1==0.5.1
 pyasn1-modules==0.3.0
 pycparser==2.22
-<<<<<<< HEAD
-=======
-Pygments==2.17.2
->>>>>>> 95a1c7fe7251e2889ec33fe3628d027cb30ca7a4
 pyinstaller==6.3.0
 pyinstaller-hooks-contrib==2024.0
 PyNaCl==1.5.0
 pyOpenSSL==24.1.0
-<<<<<<< HEAD
 Pysher==1.0.8
 python-dotenv==1.0.1
 urllib3==2.2.0
@@ -134,13 +112,3 @@ websocket-client==1.8.0
 wrapt==1.14.1
 
 
-=======
-pyparsing==3.1.1
-Pysher==1.0.8
-python-dotenv==1.0.1
-typing_extensions==4.9.0
-urllib3==2.2.0
-websocket-client==1.8.0
-Werkzeug==3.0.1
-wrapt==1.14.1
->>>>>>> 95a1c7fe7251e2889ec33fe3628d027cb30ca7a4
