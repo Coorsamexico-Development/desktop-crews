@@ -1,7 +1,7 @@
 import json
 import tkinter as tk
 
-import numpy
+import numpy as np
 
 from scr.config.enviroment import Enviroments
 from scr.config.styles import Styles
@@ -140,8 +140,7 @@ class ScrewsScreen(tk.Tk):
         if len(predictions_selected) == 0:
             predictions_selected = self.capture_predictions
         
-        image_predict = self.section_camara.yolov8.convert_image(self.capture_frame)
-        image_predict = image_predict.numpy()
+        image_predict = np.array(self.capture_frame)
         frame = self.section_camara.draw_predictions(image_predict=image_predict,predictions=predictions_selected )
         self.section_camara.update_image_label(frame)
 
@@ -160,7 +159,8 @@ class ScrewsScreen(tk.Tk):
         self.section_settings.set_model_combobox(value=self.producto.red_neuronal.name)
 
     def pusher_send_scan(self,cantidad):
-        self.pusher_service.trigger(channelName=f"mesas.{Enviroments.pusherMesa}.productos.{self.producto.id}",
+        if self.producto is not None:
+            self.pusher_service.trigger(channelName=f"mesas.{Enviroments.pusherMesa}.productos.{self.producto.id}",
                                 event="updateCantidadScan",
                                 data={
                                 'cantidad': cantidad,

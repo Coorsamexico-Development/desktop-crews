@@ -62,7 +62,7 @@ class Dectectron2Repository:
             model_loaded= self.history_model[model_name]
         else:
             self.cfg.MODEL.WEIGHTS = os.path.join(model_path, "model_final.pth")  # path to the model we just trained
-            self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.74   # set a custom testing threshold
+            self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.86   # set a custom testing threshold
             self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(model_categories.keys())
             predictor = DefaultPredictor(self.cfg)
             model_loaded = predictor

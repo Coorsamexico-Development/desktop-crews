@@ -5,6 +5,7 @@ from detectron2.engine import DefaultPredictor
 from PIL import Image, ImageColor, ImageDraw, ImageFont
 import numpy as np
 import cv2
+from torch import fill
 
 
 COLORS_BOXES = colors = list(ImageColor.colormap.values())
@@ -40,13 +41,14 @@ class PredicDetectron2:
     def predict_rn(self, predictor:DefaultPredictor,categories:dict[int, str]
                    , image:Image)-> tuple[list[PredictResult],np.ndarray] :
         
+        image = np.array(image)
 
         outputs =predictor(image)
         
         instances = outputs["instances"].to("cpu")
         masks = instances.pred_masks
         scores = instances.scores
-        pred_classes = instances.pred_classes
+        pred_classes = instances.pred_classes.tolist()
         pred_boxes = instances.pred_boxes.tensor
         height, width = image.shape[:2]
         
@@ -96,7 +98,7 @@ class PredicDetectron2:
                     polygon
                 )
             
-        return format_results, np.array(image)
+        return format_results, image
 
 
     def draw_boxes(self,image:np.ndarray,
@@ -104,6 +106,7 @@ class PredicDetectron2:
                     max_boxes:int=1000):
         
         print("--------------Intento de dibujar los boxes ----------------")
+        
         image_pil = Image.fromarray(np.uint8(image)).convert("RGB")
         draw = ImageDraw.Draw(image_pil)
         color = COLORS_BOXES[1]
@@ -128,8 +131,8 @@ class PredicDetectron2:
                         draw,
                         y_min,
                         x_min,
-                        y_max=y_min+heigth,
-                        x_max=x_min+width,
+                        y_max=heigth,
+                        x_max=width,
                         color=color,
                         display_str_list=[display_str])
                     self.__draw_bounding_segmentation_on_image(
@@ -137,14 +140,16 @@ class PredicDetectron2:
                          polygon=segmentations[index_box],
                          color=color,
                     )
+                   
                     
                     
-                    np.copyto(image, np.array(image_pil))
             
             max_boxes -=total_boxes #restamos para que no dibuje mas de lo maximo
+        
+        np.copyto(image, np.array(image_pil))
             
             
-        return image_pil
+        return Image.fromarray(np.uint8(image)).convert("RGB")
 
 
     def __draw_bounding_box_on_image(self,draw:ImageDraw,
@@ -156,6 +161,7 @@ class PredicDetectron2:
                                 thickness=4,
                                 display_str_list=[]):
         """Adds a bounding box to an image."""
+        
         draw.line([(x_min, y_min), 
                 (x_min, y_max), 
                 (x_max, y_max), 
@@ -168,21 +174,22 @@ class PredicDetectron2:
         # If the total height of the display strings added to the top of the bounding
         # box exceeds the top of the image, stack the strings below the bounding box
         # instead of above.
-        display_str_heights = [FONT_BOX.getsize(ds)[1] for ds in display_str_list]
-        # Each display_str has a top and bottom margin of 0.05.
+        display_str_bbox = [FONT_BOX.getbbox(ds) for ds in display_str_list]
+        display_str_heights = [bbox[3] - bbox[1] for bbox in display_str_bbox]
+       
         total_display_str_height = (1.1) * sum(display_str_heights)
 
         if y_min > total_display_str_height:
             text_bottom = y_min
         else:
             text_bottom = y_min + total_display_str_height
-            
-            
         # Reverse list and print from bottom to top.
-        for display_str in display_str_list[::-1]:
-            text_width, text_height = FONT_BOX.getsize(display_str)
+        for i in range(0, len(display_str_bbox)):
+            
+            left, top, right, bottom = display_str_bbox[i]
+            text_width = right - left
+            text_height = bottom - top
             margin = np.ceil(0.05 * text_height)
-
             draw.rectangle(
                             [
                             (x_min, text_bottom - text_height - 2 * margin), 
@@ -191,7 +198,7 @@ class PredicDetectron2:
                         fill=color
                         )
             draw.text((x_min + margin, text_bottom - text_height - margin),
-                    display_str,
+                    display_str_list[i],
                     fill="black",
                     font=FONT_BOX)
             
@@ -201,12 +208,22 @@ class PredicDetectron2:
     def __draw_bounding_segmentation_on_image(self,draw:ImageDraw,
                                 polygon,
                                 color,
-                                thickness=4):
+                                thickness=4,
+                                ):
         """Adds a bounding polygon to an image."""
-     
-        draw.polygon(polygon,
+        
+        pol = polygon[0]
+        polygon_format = [( pol[i], pol[i+1]) for i in range(0, len(pol),2)]
+        if len(polygon_format)  < 2:
+            return
+        draw.polygon(
+            
+               polygon_format
+            
+            ,
                 width=thickness,
-                fill=color)
+                outline=color,
+        )
 
 
 
