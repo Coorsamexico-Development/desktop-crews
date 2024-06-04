@@ -18,6 +18,8 @@ class CamaraFrame(tk.Frame):
     size_camara = (256,256)
     predictions = []
     num_frame = 0
+    show_boxes = True
+    show_segments = True
 
     def __init__(self, screen, captura_cameras = CaptureCameras()):
         super().__init__(screen,
@@ -69,7 +71,7 @@ class CamaraFrame(tk.Frame):
         return predicitions, image_numpy
        
     def draw_predictions(self, image_predict,predictions:List[PredictResult]):
-        return self.predictDetectron.draw_boxes(image=image_predict,predictions=predictions )
+        return self.predictDetectron.draw_boxes(image=image_predict,predictions=predictions,show_boxes=self.show_boxes, show_segments=self.show_segments)
        
             
 

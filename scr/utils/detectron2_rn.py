@@ -1,4 +1,6 @@
 from typing import List
+import os
+
 
 from detectron2.engine import DefaultPredictor
 
@@ -42,8 +44,8 @@ class PredicDetectron2:
                    , image:Image)-> tuple[list[PredictResult],np.ndarray] :
         
         image = np.array(image)
-
-        outputs =predictor(image)
+        image_bgr = cv2.cvtColor(image,cv2.COLOR_RGB2BGR)
+        outputs =predictor(image_bgr)
         
         instances = outputs["instances"].to("cpu")
         masks = instances.pred_masks
@@ -66,7 +68,9 @@ class PredicDetectron2:
             mask = masks[index].numpy()
             mask = np.ascontiguousarray(mask)
             contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            polygon = [contour.flatten().tolist() for contour in contours]
+            
+            polygon = [contour.flatten() for contour in contours]
+            polygon = [x for x in polygon if len(x) >= 4]
             #area= sum(cv2.contourArea(contour) for contour in contours)
             
             boxes = pred_boxes[index].tolist()
@@ -97,19 +101,22 @@ class PredicDetectron2:
                 format_results[index_find].segmentations.append(
                     polygon
                 )
-            
+        
         return format_results, image
 
 
     def draw_boxes(self,image:np.ndarray,
                     predictions:List[PredictResult] =[],
-                    max_boxes:int=1000):
+                    max_boxes:int=1000,
+                    show_boxes:bool=True,
+                    show_segments:bool=True,
+                    ):
         
         print("--------------Intento de dibujar los boxes ----------------")
         
         image_pil = Image.fromarray(np.uint8(image)).convert("RGB")
         draw = ImageDraw.Draw(image_pil)
-        color = COLORS_BOXES[1]
+        color = COLORS_BOXES[20]
         for i in range(len(predictions)):
             category_name = predictions[i].name
             boxes = predictions[i].boxes
@@ -125,21 +132,21 @@ class PredicDetectron2:
                     display_str = "{}: {}%".format(category_name,
                                                 int(100 * score))
                     
-                    
-                    #image_pil = Image.fromarray(np.uint8(image)).convert("RGB")
-                    self.__draw_bounding_box_on_image(
-                        draw,
-                        y_min,
-                        x_min,
-                        y_max=heigth,
-                        x_max=width,
-                        color=color,
-                        display_str_list=[display_str])
-                    self.__draw_bounding_segmentation_on_image(
-                         draw,
-                         polygon=segmentations[index_box],
-                         color=color,
-                    )
+                    if show_boxes:
+                        self.__draw_bounding_box_on_image(
+                            draw,
+                            y_min,
+                            x_min,
+                            y_max=heigth,
+                            x_max=width,
+                            color=color,
+                            display_str_list=[display_str])
+                    if show_segments:
+                        self.__draw_bounding_segmentation_on_image(
+                            draw,
+                            segments=segmentations[index_box],
+                            color=COLORS_BOXES[index_box+1],
+                        )
                    
                     
                     
@@ -206,24 +213,24 @@ class PredicDetectron2:
 
 
     def __draw_bounding_segmentation_on_image(self,draw:ImageDraw,
-                                polygon,
+                                segments,
                                 color,
                                 thickness=4,
                                 ):
         """Adds a bounding polygon to an image."""
         
-        pol = polygon[0]
-        polygon_format = [( pol[i], pol[i+1]) for i in range(0, len(pol),2)]
-        if len(polygon_format)  < 2:
-            return
-        draw.polygon(
-            
-               polygon_format
-            
-            ,
-                width=thickness,
-                outline=color,
-        )
+        for segment in segments:
+            cords = segment.reshape(-1, 2)
+            polygon_format = [tuple(cord) for cord in cords]
+        
+            draw.polygon(
+                
+                polygon_format
+                
+                ,
+                    width=thickness,
+                    outline=color,
+            )
 
 
 

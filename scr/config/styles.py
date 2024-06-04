@@ -55,3 +55,12 @@ class Styles:
                       "font": font,
                       "justify": justify
                }
+        
+        @staticmethod
+        def check_style(bg_color=BACKGROUND_COLOR, fg_color="blue", font=("Arial", 14),justify='center'):
+               return {
+                      "bg": bg_color,
+                      "fg": fg_color,
+                      "font": font,
+                      "justify": justify
+               }

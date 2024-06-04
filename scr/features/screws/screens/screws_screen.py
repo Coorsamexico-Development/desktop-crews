@@ -54,7 +54,9 @@ class ScrewsScreen(tk.Tk):
                                               on_stop_predict=self.section_camara.stop_video,
                                               on_change_camara=self.on_change_camara,
                                               on_change_model=self.on_change_model,
-                                              on_capture=self.capture_predict
+                                              on_capture=self.capture_predict,
+                                              on_change_show_box=self.on_change_show_box,
+                                              on_change_show_segment=self.on_change_show_segment,
                                               )
         self.section_settings.pack(side="left", fill="both",padx=10, expand=True)
         
@@ -144,7 +146,11 @@ class ScrewsScreen(tk.Tk):
         frame = self.section_camara.draw_predictions(image_predict=image_predict,predictions=predictions_selected )
         self.section_camara.update_image_label(frame)
 
-    
+    def on_change_show_box(self, check:bool):
+        self.section_camara.show_boxes=check
+
+    def on_change_show_segment(self, check:bool):
+        self.section_camara.show_segments=check
 
     def onConnect(self,pusher:PusherService):
         channel = pusher.channel(f"mesas.{Enviroments.pusherMesa}")
@@ -165,6 +171,7 @@ class ScrewsScreen(tk.Tk):
                                 data={
                                 'cantidad': cantidad,
                                 })
+            
         
         
 

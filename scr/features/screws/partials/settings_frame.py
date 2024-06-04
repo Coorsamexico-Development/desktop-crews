@@ -12,15 +12,21 @@ class SettingsFrame(tk.Frame):
                  on_stop_predict=  lambda:None,
                  on_change_camara= lambda i,text:None,
                  on_change_model= lambda i,text:None,
+                 on_change_show_box= lambda i,val:True,
+                 on_change_show_segment= lambda i,val:True,
                  on_capture = lambda: None
                  ):
         super().__init__(screen,**Styles.frame_style())
         self.on_change_camara = on_change_camara
         self.on_change_model = on_change_model
+        self.on_change_show_segment= on_change_show_segment
+        self.on_change_show_box = on_change_show_box
         self.on_predict = on_predict
         self.on_capture = on_capture
         self.on_stop_predict = on_stop_predict
         self.text_rn_selected = tk.StringVar(self)
+        self.check_box = tk.IntVar( value=1)
+        self.check_segment = tk.IntVar( value=1)
         self.text_camara_selected = tk.StringVar(self)
 
 
@@ -68,6 +74,42 @@ class SettingsFrame(tk.Frame):
             row=1,
             column=1,
         )
+
+        self.check_show_box = tk.Checkbutton(self, text="Mostrar Cuadros", 
+            
+            variable=self.check_box,
+            onvalue=1, offvalue=0,
+
+            **Styles.check_style()
+            )
+        self.check_show_box.config(command=self.toggle_show_box)
+        
+        
+        
+        self.check_show_box.grid(
+            row=2,
+            pady=10,
+            padx=5,
+            column=0,
+        )
+
+        self.check_show_segment = tk.Checkbutton(self, text="Mostrar Contornos", 
+            
+            variable=self.check_segment,
+            onvalue=1, offvalue=0,
+
+            **Styles.check_style()
+            )
+        
+        self.check_show_segment.config(command=self.toggle_show_segment)
+        
+        
+        self.check_show_segment.grid(
+            row=2,
+            pady=10,
+            padx=5,
+            column=1,
+        )
         
         self.button_predict = tk.Button(
             self,
@@ -76,7 +118,7 @@ class SettingsFrame(tk.Frame):
         )
 
         self.button_predict.grid(
-            row=2,
+            row=3,
             pady=10,
             padx=5,
             columnspan=2,
@@ -93,7 +135,7 @@ class SettingsFrame(tk.Frame):
 
         self.button_capturar.grid(
             padx=5,
-            row=3,
+            row=4,
             columnspan=2,
             column=0,
         )
@@ -156,6 +198,12 @@ class SettingsFrame(tk.Frame):
         self.is_predicting = False
         self.button_predict.config(text="COMENZAR PREDICIONES")
         self.on_capture()
+
+    def toggle_show_box(self):
+        self.on_change_show_box(self.check_box.get() == 1)
+
+    def toggle_show_segment(self):
+        self.on_change_show_segment(self.check_segment.get() == 1)
         
 
 

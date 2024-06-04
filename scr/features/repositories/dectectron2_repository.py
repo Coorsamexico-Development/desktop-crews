@@ -24,9 +24,10 @@ class Dectectron2Repository:
         self.categories = categories
         self.cfg = get_cfg()
         self.cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
-        self.cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")  # Let training initialize from model zoo
-        self.cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 128   # The "RoIHead batch size". 128 is faster, and good enough for this toy dataset (default: 512)
         self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
+
+
+        
         self.path = os.path.join(os.getcwd(), "assets", "models-dectectron2")
         if not os.path.exists(self.path):
             os.makedirs(self.path)
@@ -62,7 +63,7 @@ class Dectectron2Repository:
             model_loaded= self.history_model[model_name]
         else:
             self.cfg.MODEL.WEIGHTS = os.path.join(model_path, "model_final.pth")  # path to the model we just trained
-            self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.86   # set a custom testing threshold
+            self.cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.74   # set a custom testing threshold
             self.cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(model_categories.keys())
             predictor = DefaultPredictor(self.cfg)
             model_loaded = predictor
